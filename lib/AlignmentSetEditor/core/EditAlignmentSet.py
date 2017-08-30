@@ -24,7 +24,7 @@ class EditAlignmentSet:
         self.config = config
         self.logger = logger
         self.callback_url = os.environ['SDK_CALLBACK_URL']
-        self.scratch = os.path.join(config['scratch'], 'EM_' + str(uuid.uuid4()))
+        self.scratch = os.path.join(config['scratch'], 'EAS_' + str(uuid.uuid4()))
         self.ws_url = config['workspace-url']
         self.ws_client = Workspace(self.ws_url)
         self.dfu = DataFileUtil(self.callback_url)

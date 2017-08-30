@@ -1,0 +1,128 @@
+{
+   "name" : "Edit Media",
+   "ver" : "1.0.0",
+   "authors" : ["chenry@mcs.anl.gov"],
+   "contact" : "http://kbase.us/contact-us/",
+   "visble" : true,
+   "categories" : ["active"],
+   "widgets" : {
+     "input" : null,
+     "output" : "KBaseSets.AlignmentSet"
+   },
+   "parameters" : [
+      {
+         "text_options" : {
+            "valid_ws_types" : [
+               "KBaseSets.AlignmentSet"
+            ]
+         },
+         "advanced" : false,
+         "default_values" : [
+            ""
+         ],
+         "id" : "input_alignment_set",
+         "optional" : false,
+         "allow_multiple" : false,
+         "field_type" : "text"
+      },
+      {
+         "default_values" : [
+            ""
+         ],
+         "advanced" : false,
+         "id" : "alignment_set_output_name",
+         "optional" : false,
+         "allow_multiple" : false,
+         "field_type" : "text",
+         "text_options" : {
+            "valid_ws_types" : [
+               "KBaseSets.AlignmentSet"
+            ],
+            "is_output_name" : true
+         }
+      },
+      {
+         "field_type": "textsubdata",
+         "allow_multiple": false,
+         "optional": true,
+         "id": "alignments_to_remove",
+         "default_values": [
+            ""
+         ],
+         "advanced": false,
+         "textsubdata_options": {
+            "allow_custom": false,
+            "show_src_obj": false,
+            "subdata_selection": {
+               "path_to_subdata": [
+                  "mediacompounds"
+               ],
+               "parameter_id": "input_alignment_set",
+               "selection_id": "alignment_ref",
+               "subdata_included": [
+                  "input_alignment_set/[*]/alignment_ref"
+               ]
+            },
+            "multiselection": true
+         },
+         "text_options": {
+            "valid_ws_types": []
+         }
+      },
+      {
+         "text_options" : {
+            "valid_ws_types" : [
+               "KBaseRNASeq.RNASeqAlignment"
+            ]
+         },
+         "advanced" : false,
+         "default_values" : [
+            ""
+         ],
+         "id" : "alignments_to_add",
+         "optional" : false,
+         "allow_multiple" : true,
+         "field_type" : "text"
+      }
+   ],
+   "behavior" : {
+     "service-mapping": {
+            "url": "",
+            "name": "AlignmentSetEditor",
+            "method": "edit_alignment_set",
+       "input_mapping": [
+       	{
+			"narrative_system_variable": "workspace",
+			"target_property": "workspace"
+		},
+		{
+			"target_property" : "alignments_to_add",
+			"input_parameter" : "alignments_to_add"
+		},
+		{
+			"target_property" : "alignments_to_remove",
+			"input_parameter" : "alignments_to_remove"
+		}
+       ],
+       "output_mapping" : [
+			{
+				"service_method_output_path": [0, "report_name"],
+				"target_property": "report_name"
+			},
+			{
+				"service_method_output_path": [0, "report_ref"],
+				"target_property": "report_ref"
+			},
+			{
+				"narrative_system_variable": "workspace",
+				"target_property": "workspace_name"
+			},
+            {
+               "narrative_system_variable" : "workspace",
+               "target_property" : "ws"
+            }
+       ]
+     }
+   },
+   "job_id_output_field": "docker"
+ }

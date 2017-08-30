@@ -1,0 +1,63 @@
+#
+# Define basic display information
+#
+name     : Edit Alignment Set
+subtitle : |
+    Edit an exisitng alignment set object.
+tooltip  : |
+    Edit an exisitng alignment set object.
+screenshots :
+    []
+
+icon: fba-teal.png
+
+#
+# Define the set of other narrative methods that should be suggested to the user.
+#
+suggestions :
+    apps:
+        related :
+            []
+        next :
+            []
+    methods:
+        related :
+            []
+        next :
+            []
+
+#
+# Configure the display and description of the parameters
+#
+parameters :
+    input_alignment_set :
+        ui-name : |
+            Alignment set to edit
+        short-hint : |
+            Alignment set contains a set of alignment objects. Each alignment object contains a bam file.
+        long-hint  : |
+            Alignment set contains a set of alignment objects. Each alignment object contains a bam file.
+    alignments_to_remove :
+        ui-name : |
+            Alignments to remove
+        short-hint : |
+            Alignments to remove
+        long-hint  : |
+            Alignments to remove
+    alignments_to_add :
+        ui-name : |
+            Alignments to add
+        short-hint : |
+            Alignments to add
+        long-hint  : |
+            Alignments to add
+    alignment_set_output_name :
+        ui-name : |
+            Output alignment set object name
+        short-hint : |
+            Name of the output alignment set object
+        long-hint  : |
+            Name of the output alignment set object
+
+description : |
+    <p>Edit an alignment set by adding and/or removing alignments.</p>
