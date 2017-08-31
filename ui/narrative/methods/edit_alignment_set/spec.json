@@ -1,7 +1,6 @@
 {
    "name" : "Edit Media",
    "ver" : "1.0.0",
-   "authors" : ["chenry@mcs.anl.gov"],
    "contact" : "http://kbase.us/contact-us/",
    "visble" : true,
    "categories" : ["active"],
