@@ -5,8 +5,8 @@
    "visble" : true,
    "categories" : ["active"],
    "widgets" : {
-     "input" : null,
-     "output" : "KBaseSets.ReadsAlignmentSet"
+     "input" : "kbaseNarrativeMethodInput",
+     "output" : "no-display"
    },
    "parameters" : [
       {
