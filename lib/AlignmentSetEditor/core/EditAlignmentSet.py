@@ -92,7 +92,7 @@ class EditAlignmentSet:
 
         alignment_set_ref = params.get(self.PARAM_IN_ALIGNSET_REF)
 
-        print('INPUT ALIGNMENT SET REF: " + alignment_set_ref)
+        print('INPUT ALIGNMENT SET REF: ' + alignment_set_ref)
         
         alignment_set_obj = self.setAPI.get_reads_alignment_set_v1({
                                     'ref': alignment_set_ref
