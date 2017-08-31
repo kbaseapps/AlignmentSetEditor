@@ -63,11 +63,6 @@
             },
             "multiselection": true
          },
-         "text_options": {
-            "valid_ws_types": [
-		    "KBaseRNASeq.RNASeqAlignment"
-	    ]
-         }
       },
       {
          "text_options" : {
