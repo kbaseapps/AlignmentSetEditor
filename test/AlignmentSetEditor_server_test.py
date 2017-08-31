@@ -131,7 +131,6 @@ class AlignmentSetEditorTest(unittest.TestCase):
         alignments_to_add = ['2409/381/9', '2409/382/9']
 
         params = {'alignment_set_ref': appdev_alignment_set_ref,
-                  'alignments_to_remove': alignments_to_remove,
                   'workspace_name': self.getWsName(),
                   'output_object_name': 'test_edit_alignment_set',
                   'alignments_to_remove': alignments_to_remove,

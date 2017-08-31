@@ -30,7 +30,7 @@
             "alignment_set"
          ],
          "advanced" : false,
-         "id" : "alignment_set_output_name",
+         "id" : "output_object_name",
          "optional" : false,
          "allow_multiple" : false,
          "field_type" : "text",
@@ -94,8 +94,8 @@
 			"target_property": "workspace_name"
 		},
 		{
-          "input_parameter" : "alignment_set_ref",
-          "target_property" : "alignment_set_ref"
+            "input_parameter" : "alignment_set_ref",
+            "target_property" : "alignment_set_ref"
         },
         {
 			"target_property" : "alignments_to_add",
@@ -104,6 +104,10 @@
 		{
 			"target_property" : "alignments_to_remove",
 			"input_parameter" : "alignments_to_remove"
+		},
+		{
+			"target_property" : "output_object_name",
+			"input_parameter" : "output_object_name"
 		}
        ],
        "output_mapping" : [

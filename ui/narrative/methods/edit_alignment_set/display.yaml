@@ -30,7 +30,7 @@ suggestions :
 # Configure the display and description of the parameters
 #
 parameters :
-    input_alignment_set :
+    alignment_set_ref :
         ui-name : |
             Alignment set to edit
         short-hint : |
@@ -51,7 +51,7 @@ parameters :
             Alignments to add
         long-hint  : |
             Alignments to add
-    alignment_set_output_name :
+    output_object_name :
         ui-name : |
             Output alignment set object name
         short-hint : |
