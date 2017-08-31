@@ -7,13 +7,13 @@
    "categories" : ["active"],
    "widgets" : {
      "input" : null,
-     "output" : "KBaseSets.AlignmentSet"
+     "output" : "KBaseSets.ReadsAlignmentSet"
    },
    "parameters" : [
       {
          "text_options" : {
             "valid_ws_types" : [
-               "KBaseSets.AlignmentSet"
+               "KBaseSets.ReadsAlignmentSet"
             ]
          },
          "advanced" : false,
@@ -36,7 +36,7 @@
          "field_type" : "text",
          "text_options" : {
             "valid_ws_types" : [
-               "KBaseSets.AlignmentSet"
+               "KBaseSets.ReadsAlignmentSet"
             ],
             "is_output_name" : true
          }

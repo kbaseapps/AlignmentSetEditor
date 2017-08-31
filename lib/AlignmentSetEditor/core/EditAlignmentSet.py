@@ -2,6 +2,7 @@ import os
 import uuid
 import re
 import shutil
+import logging
 from pprint import pprint, pformat
 
 from Workspace.WorkspaceClient import Workspace
@@ -50,13 +51,13 @@ class EditAlignmentSet:
                 prefix = se.message.split('.')[0]
                 raise ValueError(prefix)
 
-        alignments_to_add = params.get(self.PARAM_IN_ALIGN_ADD)
-        alignments_to_remove = params.get(self.PARAM_IN_ALIGN_RM)
+        alignments_to_add = params.get(self.PARAM_IN_ALIGNS_ADD)
+        alignments_to_remove = params.get(self.PARAM_IN_ALIGNS_RM)
 
         if alignments_to_add is None and alignments_to_remove is None:
-            raise ValueError('"{}" or "{}" should be given'.format(
-                params.get(self.PARAM_IN_ALIGN_ADD),
-                params.get(self.PARAM_IN_ALIGN_RM))
+            raise ValueError('Either "alignments_to_remove" or "alignments_to_add" should be given')
+
+        return ws_name_id
 
     def _add_alignments(self, alignment_set_items, alignment_refs_list):
 
@@ -70,44 +71,57 @@ class EditAlignmentSet:
     def _remove_alignments(self, input_alignment_set, alignment_set_items, alignments_to_remove):
 
         for input_item in input_alignment_set:
-            if input_item.get('ref') is not in alignments_to_remove:
+            if not (input_item.get('ref') in alignments_to_remove):
                 alignment_set_items.append(input_item)
 
         return alignment_set_items
 
-    def save_alignment_set(self, ws_name, obj_name, set_items):
+    def _save_alignment_set(self, ws_name, obj_name, set_data):
 
-        res = self.setAPI.save_differential_expression_matrix_set_v1({
-                                        "workspace": ws_name),
+        res = self.setAPI.save_reads_alignment_set_v1({
+                                        "workspace": ws_name,
                                         "output_object_name": obj_name,
-                                        "data": set_items
+                                        "data": set_data
                                         })
         return res.get('set_ref')
 
     def edit_alignment_set(self, params):
 
-        self._process_params(params)
+        ws_name_id = self._process_params(params)
+        obj_name = params.get(self.PARAM_IN_OBJ_NAME_ID)
 
         alignment_set_ref = params.get(self.PARAM_IN_ALIGNSET_REF)
 
-        alignment_set_obj = self.dfu.get_objects(
-                                    {'object_refs': [alignment_set_ref]})['data'][0]
+        alignment_set_obj = self.setAPI.get_reads_alignment_set_v1({
+                                    'ref': alignment_set_ref
+                                    })
 
         alignment_set_obj_type = alignment_set_obj.get('info')[2]
 
-        if re.match('KBaseSets.AlignmentSet-\d.\d', alignment_set_obj_type):
+        print('alignment_set_obj_type::::::: ' + alignment_set_obj_type)
+
+        if not re.match('KBaseSets.ReadsAlignmentSet-\d.\d', alignment_set_obj_type):
             raise ValueError(TypeError(self.PARAM_IN_ALIGNSET_REF + ' should be of type ' +
-                            'KBaseSets.AlignmentSet'))
+                            'KBaseSets.ReadsAlignmentSet'))
 
         input_alignment_set = alignment_set_obj.get('data').get('items')
 
-        alignments_to_remove = params.get(self.PARAM_IN_ALIGNS_RM)
-        alignments_to_add = params.get(self.PARAM_IN_ALIGNS_ADD)
+        alignments_to_remove = params.get(self.PARAM_IN_ALIGNS_RM, None)
+        alignments_to_add = params.get(self.PARAM_IN_ALIGNS_ADD, None)
 
         set_items = list()
-        set_items = self._remove_alignments(input_alignment_set, set_items, alignments_to_remove)
-        set_items = self._add_alignments(set_items, alignments_to_add)
+        if alignments_to_remove is not None:
+            set_items = self._remove_alignments(input_alignment_set, set_items, alignments_to_remove)
+        if alignments_to_add is not None:
+            set_items = self._add_alignments(set_items, alignments_to_add)
 
-        output_alignment_set_ref = self._save_alignmentSet(ws_name,
+        print('==============  SET_ITEMS ==============')
+        pprint(set_items)
+
+        set_data = {'description': 'Edited from {}'.format(alignment_set_ref),
+                    'items': set_items}
+
+        output_alignment_set_ref = self._save_alignment_set(ws_name_id,
                                                            obj_name,
-                                                           set_items)
+                                                           set_data)
+        return output_alignment_set_ref

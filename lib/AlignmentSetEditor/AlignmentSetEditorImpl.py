@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
+import os
+import sys
+import time
+import logging
+
+from core.EditAlignmentSet import EditAlignmentSet
 #END_HEADER
 
 
@@ -20,7 +26,7 @@ class AlignmentSetEditor:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = ""
-    GIT_COMMIT_HASH = ""
+    GIT_COMMIT_HASH = "6ad66af999a9585501af0ecf3a8870d7076aa24f"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -43,7 +49,7 @@ class AlignmentSetEditor:
         self.scratch = config['scratch']
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.ws_url = config['workspace-url']
-        self.edit_alignment_set = EditAlignmentSet(config, self.__LOGGER)
+        self.edit_alignmentset = EditAlignmentSet(config, self.__LOGGER)
         #END_CONSTRUCTOR
         pass
 
@@ -68,7 +74,7 @@ class AlignmentSetEditor:
         # return variables are: returnVal
         #BEGIN edit_alignment_set
 
-        alignment_set_ref = self.edit_alignment_set.edit_alignment_set(params)
+        alignment_set_ref = self.edit_alignmentset.edit_alignment_set(params)
 
         returnVal = {'alignment_set_ref': alignment_set_ref}
 

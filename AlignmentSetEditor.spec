@@ -32,7 +32,9 @@ module AlignmentSetEditor {
     /*
     Edit models
     */
-    funcdef edit_alignment_set(EditAlignmentSetParams params) returns (EditAlignmentSetResult) authentication required;
+    funcdef edit_alignment_set(EditAlignmentSetParams params)
+                      returns (EditAlignmentSetResult)
+                      authentication required;
 };
 
 
