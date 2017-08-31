@@ -32,28 +32,28 @@ suggestions :
 parameters :
     alignment_set_ref :
         ui-name : |
-            Alignment set to edit
+            Alignment set to edit:
         short-hint : |
             Alignment set contains a set of alignment objects. Each alignment object contains a bam file.
         long-hint  : |
             Alignment set contains a set of alignment objects. Each alignment object contains a bam file.
     alignments_to_remove :
         ui-name : |
-            Alignments to remove
+            Alignments to remove:
         short-hint : |
             Alignments to remove
         long-hint  : |
             Alignments to remove
     alignments_to_add :
         ui-name : |
-            Alignments to add
+            Alignments to add:
         short-hint : |
             Alignments to add
         long-hint  : |
             Alignments to add
     output_object_name :
         ui-name : |
-            Output alignment set object name
+            Output alignment set object name:
         short-hint : |
             Name of the output alignment set object
         long-hint  : |
