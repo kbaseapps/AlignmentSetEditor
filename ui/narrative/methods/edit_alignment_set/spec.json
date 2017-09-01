@@ -52,7 +52,7 @@
             "subdata_selection": {
                "parameter_id": "alignment_set_ref",
                "path_to_subdata": ["items"],
-               "selection_id": "ref",
+               "selection_id": "info",
                "subdata_included": [
                   "items/[*]/info[1]"
                ]
