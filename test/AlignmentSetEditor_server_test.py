@@ -19,7 +19,6 @@ from biokbase.workspace.client import Workspace as workspaceService
 from AlignmentSetEditor.AlignmentSetEditorImpl import AlignmentSetEditor
 from AlignmentSetEditor.AlignmentSetEditorServer import MethodContext
 from AlignmentSetEditor.authclient import KBaseAuth as _KBaseAuth
-from DataFileUtil.DataFileUtilClient import DataFileUtil
 from SetAPI.SetAPIClient import SetAPI
 from GenomeFileUtil.GenomeFileUtilClient import GenomeFileUtil
 from ReadsUtils.ReadsUtilsClient import ReadsUtils
@@ -59,10 +58,11 @@ class AlignmentSetEditorTest(unittest.TestCase):
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
         cls.setAPI = SetAPI(cls.callback_url)
         cls.gfu = GenomeFileUtil(cls.callback_url)
-        cls.dfu = DataFileUtil(cls.callback_url)
         cls.ru = ReadsUtils(cls.callback_url)
         cls.rau = ReadsAlignmentUtils(cls.callback_url)
-        #cls.setupData()
+        suffix = int(time.time() * 1000)
+        cls.wsName = "test_AlignmentSetEditor_" + str(suffix)
+        cls.wsClient.create_workspace({'workspace': cls.wsName})
 
     @classmethod
     def tearDownClass(cls):
@@ -74,13 +74,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
         return self.__class__.wsClient
 
     def getWsName(self):
-        if hasattr(self.__class__, 'wsName'):
-            return self.__class__.wsName
-        suffix = int(time.time() * 1000)
-        wsName = "test_AlignmentSetEditor_" + str(suffix)
-        ret = self.getWsClient().create_workspace({'workspace': wsName})  # noqa
-        self.__class__.wsName = wsName
-        return wsName
+        return self.__class__.wsName
 
     def getImpl(self):
         return self.__class__.serviceImpl
@@ -98,7 +92,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
         genome_object_name = 'test_Genome'
         cls.genome_ref = cls.gfu.genbank_to_genome({'file': {'path': genbank_file_path},
-                                                    'workspace_name': cls.getWsName(),
+                                                    'workspace_name': cls.wsName,
                                                     'genome_name': genome_object_name
                                                     })['genome_ref']
         # upload reads object
@@ -108,7 +102,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
         reads_object_name_1 = 'test_Reads_1'
         cls.reads_ref_1 = cls.ru.upload_reads({'fwd_file': reads_file_path,
-                                               'wsname': cls.getWsName(),
+                                               'wsname': cls.wsName,
                                                'sequencing_tech': 'Unknown',
                                                'interleaved': 0,
                                                'name': reads_object_name_1
@@ -120,7 +114,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
         alignment_object_name_1 = 'test_Alignment_1'
         cls.condition_1 = 'test_condition_1'
-        destination_ref = cls.getWsName() + '/' + alignment_object_name_1
+        destination_ref = cls.wsName + '/' + alignment_object_name_1
         cls.alignment_ref_1 = cls.rau.upload_alignment({'file_path': alignment_file_path,
                                                         'destination_ref': destination_ref,
                                                         'read_library_ref': cls.reads_ref_1,
@@ -131,7 +125,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
         alignment_object_name_2 = 'test_Alignment_2'
         cls.condition_2 = 'test_condition_2'
-        destination_ref = cls.getWsName() + '/' + alignment_object_name_2
+        destination_ref = cls.wsName + '/' + alignment_object_name_2
         cls.alignment_ref_2 = cls.rau.upload_alignment({'file_path': alignment_file_path,
                                                         'destination_ref': destination_ref,
                                                         'read_library_ref': cls.reads_ref_1,
@@ -139,9 +133,21 @@ class AlignmentSetEditorTest(unittest.TestCase):
                                                         'library_type': 'single_end',
                                                         'assembly_or_genome_ref': cls.genome_ref
                                                         })['obj_ref']
+        set_items = [{'ref': cls.alignment_ref_1},
+                     {'ref': cls.alignment_ref_2}]
+
+        set_data = {'description': 'test_alignment_set',
+                    'items': set_items }
+
+        cls.alignment_set_ref = cls.setAPI.save_reads_alignment_set_v1({
+                                                        "workspace": cls.wsName,
+                                                        "output_object_name": 'test_alignment_set',
+                                                        "data": set_data
+                                                        })['set_ref']
+
         alignment_object_name_3 = 'test_Alignment_3'
         cls.condition_3 = 'test_condition_3'
-        destination_ref = cls.getWsName() + '/' + alignment_object_name_3
+        destination_ref = cls.wsName + '/' + alignment_object_name_3
         cls.alignment_ref_3 = cls.rau.upload_alignment({'file_path': alignment_file_path,
                                                         'destination_ref': destination_ref,
                                                         'read_library_ref': cls.reads_ref_1,
@@ -151,7 +157,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
                                                         })['obj_ref']
         alignment_object_name_4 = 'test_Alignment_4'
         cls.condition_4 = 'test_condition_4'
-        destination_ref = cls.getWsName() + '/' + alignment_object_name_4
+        destination_ref = cls.wsName + '/' + alignment_object_name_4
         cls.alignment_ref_4 = cls.rau.upload_alignment({'file_path': alignment_file_path,
                                                         'destination_ref': destination_ref,
                                                         'read_library_ref': cls.reads_ref_1,
@@ -162,7 +168,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
     # Following test uses object refs from a narrative. Comment the next line to run the test
-    @unittest.skip("skipped test_edit_alignment_set_success")
+    @unittest.skip("skipped test_edit_appdev_alignment_set_success")
     def test_edit_appdev_alignment_set_success(self):
 
         appdev_alignment_set_ref = '5264/36/9'
@@ -195,7 +201,8 @@ class AlignmentSetEditorTest(unittest.TestCase):
         pprint(outputObj)
         print("==========================================================")
 
-    #@unittest.skip("skipped test_edit_alignment_set_success")
+    # Following test uses object refs from a narrative. Comment the next line to run the test
+    @unittest.skip("skipped test_edit_ci_alignment_set_success")
     def test_edit_ci_alignment_set_success(self):
 
         ci_alignment_set_ref = '25418/3/2'
@@ -228,14 +235,16 @@ class AlignmentSetEditorTest(unittest.TestCase):
         pprint(outputObj)
         print("==========================================================")
 
-    '''
+    @unittest.skip("skipped test_edit_alignment_set_success")
     def test_edit_alignment_set_success(self):
 
-        alignment_set_ref = self.alignment_set
+        self.setupData()
+
+        created_alignment_set_ref = self.alignment_set_ref
         alignments_to_remove = [self.alignment_ref_1]
         alignments_to_add = [self.alignment_ref_3, self.alignment_ref_4]
 
-        params = {'alignment_set_ref': alignment_set_ref,
+        params = {'alignment_set_ref': created_alignment_set_ref,
                   'workspace_name': self.getWsName(),
                   'output_object_name': 'test_edit_alignment_set_2',
                   'alignments_to_remove': alignments_to_remove,
@@ -243,6 +252,14 @@ class AlignmentSetEditorTest(unittest.TestCase):
                   }
 
         edit_retVal = self.getImpl().edit_alignment_set(self.ctx, params)[0]
+
+        inputObj = self.setAPI.get_reads_alignment_set_v1({
+            'ref': created_alignment_set_ref
+        })
+
+        print("============ INPUT ALIGNMENT SET OBJECT ==============")
+        pprint(inputObj)
+        print("==========================================================")
 
         alignment_set_ref = edit_retVal.get('alignment_set_ref')
         outputObj = self.setAPI.get_reads_alignment_set_v1({
@@ -264,6 +281,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
         self.assertEqual(self.alignment_ref_4 in output_alignment_list, True)
         self.assertEqual(self.alignment_ref_1 in output_alignment_list, False)
 
+
     def edit_alignment_set_failure(self, params, error, exception=ValueError, do_startswith=False):
 
         test_name = inspect.stack()[1][3]
@@ -284,54 +302,54 @@ class AlignmentSetEditorTest(unittest.TestCase):
         self.edit_alignment_set_failure({
                                         'workspace_name': self.getWsName(),
                                         'output_object_name': 'test_edit_alignment_set_2',
-                                        'alignments_to_remove': [self.alignment_ref_1],
-                                        'alignments_to_add': [self.alignment_ref_3, self.alignment_ref_4]
+                                        'alignments_to_remove': ['0/0/0'],
+                                        'alignments_to_add': ['0/0/0', '1/1/1']
                                         },
                                         '"alignment_set_ref" parameter is required, but missing')
 
     def test_edit_fail_no_ws_name(self):
         self.edit_alignment_set_failure({
-                                        'alignment_set_ref': self.alignment_set_ref,
+                                        'alignment_set_ref': '0/0/0',
                                         'output_object_name': 'test_edit_alignment_set_2',
-                                        'alignments_to_remove': [self.alignment_ref_1],
-                                        'alignments_to_add': [self.alignment_ref_3, self.alignment_ref_4]
+                                        'alignments_to_remove': ['0/0/0'],
+                                        'alignments_to_add': ['0/0/0', '1/1/1']
                                         },
                                         '"workspace_name" parameter is required, but missing')
 
     def test_edit_fail_no_obj_name(self):
         self.edit_alignment_set_failure({
                                         'workspace_name': self.getWsName(),
-                                        'alignment_set_ref': alignment_set_ref,
-                                        'alignments_to_remove': [self.alignment_ref_1],
-                                        'alignments_to_add': [self.alignment_ref_3, self.alignment_ref_4]
+                                        'alignment_set_ref': '0/0/0',
+                                        'alignments_to_remove': ['0/0/0'],
+                                        'alignments_to_add': ['0/0/0', '1/1/1']
                                         },
                                         '"output_object_name" parameter is required, but missing')
 
     def test_edit_fail_bad_wsname(self):
         self.edit_alignment_set_failure({
-                                        'alignment_set_ref': self.alignment_set_ref,
+                                        'alignment_set_ref': '0/0/0',
                                         'workspace_name': '&bad',
                                         'output_object_name': 'test_edit_alignment_set_2',
-                                        'alignments_to_remove': [self.alignment_ref_1],
-                                        'alignments_to_add': [self.alignment_ref_3, self.alignment_ref_4]
+                                        'alignments_to_remove': ['0/0/0'],
+                                        'alignments_to_add': ['0/0/0', '1/1/1']
                                         },
                                         'Illegal character in workspace name &bad: &')
 
     def test_edit_fail_non_existant_wsname(self):
         self.edit_alignment_set_failure({
-                                        'alignment_set_ref': self.alignment_set_ref,
+                                        'alignment_set_ref': '0/0/0',
                                         'workspace_name': '1s',
                                         'output_object_name': 'test_edit_alignment_set_2',
-                                        'alignments_to_remove': [self.alignment_ref_1],
-                                        'alignments_to_add': [self.alignment_ref_3, self.alignment_ref_4]
+                                        'alignments_to_remove': ['0/0/0'],
+                                        'alignments_to_add': ['0/0/0', '1/1/1']
                                         },
                                         'No workspace with name 1s exists')
 
     def test_edit_fail_no_add_or_rm(self):
         self.edit_alignment_set_failure({
-                                        'alignment_set_ref': self.alignment_set_ref,
+                                        'alignment_set_ref': '0/0/0',
                                         'workspace_name': self.getWsName(),
                                         'output_object_name': 'test_edit_alignment_set_2'
                                         },
                                         'Either "alignments_to_remove" or "alignments_to_add" should be given')
-    '''
+
