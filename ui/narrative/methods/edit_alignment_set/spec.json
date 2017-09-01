@@ -54,7 +54,7 @@
                "path_to_subdata": ["items"],
                "selection_id": "ref",
                "subdata_included": [
-                  "items/[*]/ref"
+                  "items/[*]/info[1]"
                ]
             },
             "multiselection": true
