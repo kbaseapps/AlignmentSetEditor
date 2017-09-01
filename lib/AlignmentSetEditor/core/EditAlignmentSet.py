@@ -62,9 +62,18 @@ class EditAlignmentSet:
     def _add_alignments(self, alignment_set_items, alignment_refs_list):
 
         for alignment_ref in alignment_refs_list:
-            alignment_set_items.append({
-                            'ref': alignment_ref
-                        })
+
+            found = False
+            for set_item in alignment_set_items:
+                if set_item.get('ref') == alignment_ref:
+                    print('{} already in the input Alignment Set. Not added'.format(alignment_ref))
+                    found = True
+                    break
+
+            if not found:
+                alignment_set_items.append({
+                                'ref': alignment_ref
+                            })
 
         return alignment_set_items
 
@@ -86,6 +95,10 @@ class EditAlignmentSet:
         return res.get('set_ref')
 
     def edit_alignment_set(self, params):
+
+        print('==============  PARAMS  ==============')
+        pprint(params)
+        print('======================================')
 
         ws_name_id = self._process_params(params)
         obj_name = params.get(self.PARAM_IN_OBJ_NAME_ID)
