@@ -50,7 +50,7 @@
             "allow_custom": false,
             "show_src_obj": false,
             "subdata_selection": {
-               "parameter_id": "input_alignment_set",
+               "parameter_id": "alignment_set_ref",
                "path_to_subdata": ["items"],
                "selection_id": "ref",
                "subdata_included": [
