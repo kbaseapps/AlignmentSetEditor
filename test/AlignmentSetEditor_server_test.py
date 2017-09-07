@@ -167,95 +167,18 @@ class AlignmentSetEditorTest(unittest.TestCase):
                                                         })['obj_ref']
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
-    # Following test uses object refs from a narrative. Comment the next line to run the test
-    @unittest.skip("skipped test_edit_appdev_alignment_set_success")
-    def test_edit_appdev_alignment_set_success(self):
 
-        appdev_alignment_set_ref = '5264/36/9'
-        alignments_to_remove = ['2409/380/9', '2409/383/9']
-        alignments_to_add = ['2409/381/9', '2409/382/9']
+    def edit_alignment_set_success(self, params):
 
-        params = {'alignment_set_ref': appdev_alignment_set_ref,
-                  'workspace_name': self.getWsName(),
-                  'output_object_name': 'test_edit_alignment_set_1',
-                  'alignments_to_remove': alignments_to_remove,
-                  'alignments_to_add': alignments_to_add
-                  }
+        test_name = inspect.stack()[1][3]
+        print('\n******** starting expected edit SUCCESS test: ' + test_name + ' *********')
+        print('-------------------------------------------------------------------------------------')
 
         edit_retVal = self.getImpl().edit_alignment_set(self.ctx, params)[0]
 
         inputObj = self.setAPI.get_reads_alignment_set_v1({
-                                    'ref': appdev_alignment_set_ref
+                                    'ref': params.get('alignment_set_ref')
                                     })
-
-        print("============ INPUT ALIGNMENT SET OBJECT ==============")
-        pprint(inputObj)
-        print("==========================================================")
-
-        alignment_set_ref = edit_retVal.get('alignment_set_ref')
-        outputObj = self.setAPI.get_reads_alignment_set_v1({
-                                    'ref': alignment_set_ref
-                                    })
-
-        print("============ OUTPUT ALIGNMENT SET OBJECT ==============")
-        pprint(outputObj)
-        print("==========================================================")
-
-    # Following test uses object refs from a narrative. Comment the next line to run the test
-    @unittest.skip("skipped test_edit_ci_alignment_set_success")
-    def test_edit_ci_alignment_set_success(self):
-
-        ci_alignment_set_ref = '25418/3/2'
-        alignments_to_remove = ['23192/126/3', '23192/129/3']
-        alignments_to_add = ['25418/5/3', '25418/4/3']
-
-        params = {'alignment_set_ref': ci_alignment_set_ref,
-                  'workspace_name': self.getWsName(),
-                  'output_object_name': 'test_edit_alignment_set_1',
-                  'alignments_to_remove': alignments_to_remove,
-                  'alignments_to_add': alignments_to_add
-                  }
-
-        edit_retVal = self.getImpl().edit_alignment_set(self.ctx, params)[0]
-
-        inputObj = self.setAPI.get_reads_alignment_set_v1({
-            'ref': ci_alignment_set_ref
-        })
-
-        print("============ INPUT ALIGNMENT SET OBJECT ==============")
-        pprint(inputObj)
-        print("==========================================================")
-
-        alignment_set_ref = edit_retVal.get('alignment_set_ref')
-        outputObj = self.setAPI.get_reads_alignment_set_v1({
-            'ref': alignment_set_ref
-        })
-
-        print("============ OUTPUT ALIGNMENT SET OBJECT ==============")
-        pprint(outputObj)
-        print("==========================================================")
-
-    @unittest.skip("skipped test_edit_alignment_set_success")
-    def test_edit_alignment_set_success(self):
-
-        self.setupData()
-
-        created_alignment_set_ref = self.alignment_set_ref
-        alignments_to_remove = [self.alignment_ref_1]
-        alignments_to_add = [self.alignment_ref_3, self.alignment_ref_4]
-
-        params = {'alignment_set_ref': created_alignment_set_ref,
-                  'workspace_name': self.getWsName(),
-                  'output_object_name': 'test_edit_alignment_set_2',
-                  'alignments_to_remove': alignments_to_remove,
-                  'alignments_to_add': alignments_to_add
-                  }
-
-        edit_retVal = self.getImpl().edit_alignment_set(self.ctx, params)[0]
-
-        inputObj = self.setAPI.get_reads_alignment_set_v1({
-            'ref': created_alignment_set_ref
-        })
 
         print("============ INPUT ALIGNMENT SET OBJECT ==============")
         pprint(inputObj)
@@ -276,16 +199,93 @@ class AlignmentSetEditorTest(unittest.TestCase):
         for alignment in output_alignment_set:
             output_alignment_list.append(alignment.get('ref'))
 
-        self.assertEqual(self.alignment_ref_2 in output_alignment_list, True)
-        self.assertEqual(self.alignment_ref_3 in output_alignment_list, True)
-        self.assertEqual(self.alignment_ref_4 in output_alignment_list, True)
-        self.assertEqual(self.alignment_ref_1 in output_alignment_list, False)
+        for rm_obj in params.get('alignments_to_remove'):
+            self.assertEqual(rm_obj in output_alignment_list, False)
 
+        for add_obj in params.get('alignments_to_add'):
+            self.assertEqual(add_obj in output_alignment_list, True)
+
+    # Following test uses object refs from a narrative. Comment the next line to run the test
+    @unittest.skip("skipped test_edit_appdev_alignment_set_success")
+    def test_edit_appdev_alignment_set_success(self):
+
+        appdev_kbasesets_alignment_set_ref = '5264/36/9'
+        alignments_to_remove = ['2409/380/9', '2409/383/9']
+        alignments_to_add = ['2409/381/9', '2409/382/9']
+
+        params = {'alignment_set_ref': appdev_kbasesets_alignment_set_ref,
+                  'workspace_name': self.getWsName(),
+                  'output_object_name': 'test_appdev_sets_edit_alignment_set',
+                  'alignments_to_remove': alignments_to_remove,
+                  'alignments_to_add': alignments_to_add
+                  }
+
+        self.edit_alignment_set_success(params)
+
+        appdev_rnaseq_alignment_set_ref = '5264/36/9'
+        alignments_to_remove = ['2409/380/9', '2409/383/9']
+        alignments_to_add = ['2409/381/9', '2409/382/9']
+
+        params = {'alignment_set_ref': appdev_rnaseq_alignment_set_ref,
+                  'workspace_name': self.getWsName(),
+                  'output_object_name': 'test_appdev_rnaseq_edit_alignment_set',
+                  'alignments_to_remove': alignments_to_remove,
+                  'alignments_to_add': alignments_to_add
+                  }
+
+        self.edit_alignment_set_success(params)
+
+    # Following test uses object refs from a narrative. Comment the next line to run the test
+    @unittest.skip("skipped test_edit_ci_alignment_set_success")
+    def test_edit_ci_alignment_set_success(self):
+
+        ci_alignment_set_ref = '25418/3/2'
+        alignments_to_remove = ['23192/126/3', '23192/129/3']
+        alignments_to_add = ['25418/5/3', '25418/4/3']
+
+        params = {'alignment_set_ref': ci_alignment_set_ref,
+                  'workspace_name': self.getWsName(),
+                  'output_object_name': 'test_ci_sets_edit_alignment_set',
+                  'alignments_to_remove': alignments_to_remove,
+                  'alignments_to_add': alignments_to_add
+                  }
+        self.edit_alignment_set_success(params)
+
+        ci_rnaseq_alignment_set_ref = '25418/8/1'
+        alignments_to_remove = ['23192/73/1', '23192/76/1']
+        alignments_to_add = ['25418/5/3', '25418/4/3']
+
+        params = {'alignment_set_ref': ci_rnaseq_alignment_set_ref,
+                  'workspace_name': self.getWsName(),
+                  'output_object_name': 'test_ci_rnaseq_edit_alignment_set',
+                  'alignments_to_remove': alignments_to_remove,
+                  'alignments_to_add': alignments_to_add
+                  }
+
+        self.edit_alignment_set_success(params)
+
+    #@unittest.skip("skipped test_edit_alignment_set_success")
+    def test_edit_alignment_set_success(self):
+
+        self.setupData()
+
+        created_alignment_set_ref = self.alignment_set_ref
+        alignments_to_remove = [self.alignment_ref_1]
+        alignments_to_add = [self.alignment_ref_3, self.alignment_ref_4]
+
+        params = {'alignment_set_ref': created_alignment_set_ref,
+                  'workspace_name': self.getWsName(),
+                  'output_object_name': 'test_edit_alignment_set_2',
+                  'alignments_to_remove': alignments_to_remove,
+                  'alignments_to_add': alignments_to_add
+                  }
+
+        self.edit_alignment_set_success(params)
 
     def edit_alignment_set_failure(self, params, error, exception=ValueError, do_startswith=False):
 
         test_name = inspect.stack()[1][3]
-        print('\n******** starting expected edit fail test: ' + test_name + ' *********')
+        print('\n******** starting expected edit FAIL test: ' + test_name + ' *********')
         print('-------------------------------------------------------------------------------------')
 
         with self.assertRaises(exception) as context:
@@ -324,6 +324,17 @@ class AlignmentSetEditorTest(unittest.TestCase):
                                         'alignments_to_add': ['0/0/0', '1/1/1']
                                         },
                                         '"output_object_name" parameter is required, but missing')
+
+    def test_edit_fail_invalid_obj_type(self):
+        self.edit_alignment_set_failure({
+                                        'workspace_name': self.getWsName(),
+                                        'output_object_name': 'test_edit_alignment_set_2',
+                                        'alignment_set_ref': self.genome_ref,
+                                        'alignments_to_remove': ['0/0/0'],
+                                        'alignments_to_add': ['0/0/0', '1/1/1']
+                                        },
+                                        '"alignment_set_ref" should be of type KBaseSets.ReadsAlignmentSet ' +
+                                        'or KBaseRNASeq.RNASeqAlignmentSet')
 
     def test_edit_fail_bad_wsname(self):
         self.edit_alignment_set_failure({
