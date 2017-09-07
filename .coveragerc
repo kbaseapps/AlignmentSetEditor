@@ -1,0 +1,20 @@
+[run]
+branch = True
+
+omit =
+    /kb/module/lib/AlignmentSetEditor/authclient.py
+    /kb/module/lib/AlignmentSetEditor/baseclient.py
+    /kb/module/lib/AlignmentSetEditor/AlignmentSetEditorClient.py
+    /kb/module/lib/AlignmentSetEditor/AlignmentSetEditorServer.py
+source = /kb/module/lib/AlignmentSetEditor
+
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+    # Don't complain if tests don't hit defensive assertion code:
+    raise NotImplementedError
+
+show_missing = 1

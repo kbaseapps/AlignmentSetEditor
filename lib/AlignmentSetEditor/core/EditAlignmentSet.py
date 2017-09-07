@@ -59,6 +59,38 @@ class EditAlignmentSet:
 
         return ws_name_id
 
+    def _get_type_from_obj_info(self, info):
+        return info[2].split('-')[0]
+
+    def _get_obj_info(self, ref):
+        return self.ws_client.get_object_info3({'objects': [{'ref': ref}]})['infos'][0]
+
+    def _get_set_items(self, alignment_set_ref):
+
+        obj_info = self._get_obj_info(alignment_set_ref)
+        obj_type = self._get_type_from_obj_info(obj_info)
+
+        if obj_type in ['KBaseSets.ReadsAlignmentSet']:
+            set_data = self.setAPI.get_reads_alignment_set_v1({'ref': alignment_set_ref})
+            items = set_data['data']['items']
+        elif obj_type in ['KBaseRNASeq.RNASeqAlignmentSet']:
+            alignmentset_obj = self.ws_client.get_objects2(
+                {'objects':
+                     [{'ref': alignment_set_ref}]})['data'][0]
+            """
+            Add each alignment object to align_item and add it to items list
+            """
+            items = list()
+            for alignment_ref in alignmentset_obj['data']['sample_alignments']:
+                align_item = dict()
+                align_item['ref'] = alignment_ref
+                items.append(align_item)
+        else:
+            raise ValueError('"alignment_set_ref" should be of type KBaseSets.ReadsAlignmentSet or ' +
+                             'KBaseRNASeq.RNASeqAlignmentSet')
+
+        return items
+
     def _add_alignments(self, alignment_set_items, alignment_refs_list):
 
         for alignment_ref in alignment_refs_list:
@@ -74,7 +106,6 @@ class EditAlignmentSet:
                 alignment_set_items.append({
                                 'ref': alignment_ref
                             })
-
         return alignment_set_items
 
     def _remove_alignments(self, input_alignment_set, alignment_set_items, alignments_to_remove):
@@ -96,30 +127,14 @@ class EditAlignmentSet:
 
     def edit_alignment_set(self, params):
 
-        print('==============  PARAMS  ==============')
-        pprint(params)
-        print('======================================')
-
         ws_name_id = self._process_params(params)
         obj_name = params.get(self.PARAM_IN_OBJ_NAME_ID)
 
         alignment_set_ref = params.get(self.PARAM_IN_ALIGNSET_REF)
 
         print('INPUT ALIGNMENT SET REF: ' + alignment_set_ref)
-        
-        alignment_set_obj = self.setAPI.get_reads_alignment_set_v1({
-                                    'ref': alignment_set_ref
-                                    })
 
-        alignment_set_obj_type = alignment_set_obj.get('info')[2]
-
-        print('alignment_set_obj_type::::::: ' + alignment_set_obj_type)
-
-        if not re.match('KBaseSets.ReadsAlignmentSet-\d.\d', alignment_set_obj_type):
-            raise ValueError(TypeError(self.PARAM_IN_ALIGNSET_REF + ' should be of type ' +
-                            'KBaseSets.ReadsAlignmentSet'))
-
-        input_alignment_set = alignment_set_obj.get('data').get('items')
+        input_alignment_set = self._get_set_items(alignment_set_ref)
 
         alignments_to_remove = params.get(self.PARAM_IN_ALIGNS_RM, None)
         alignments_to_add = params.get(self.PARAM_IN_ALIGNS_ADD, None)
@@ -129,9 +144,6 @@ class EditAlignmentSet:
             set_items = self._remove_alignments(input_alignment_set, set_items, alignments_to_remove)
         if alignments_to_add is not None:
             set_items = self._add_alignments(set_items, alignments_to_add)
-
-        print('==============  SET_ITEMS ==============')
-        pprint(set_items)
 
         set_data = {'description': 'Edited from {}'.format(alignment_set_ref),
                     'items': set_items}
