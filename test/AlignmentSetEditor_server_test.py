@@ -205,6 +205,49 @@ class AlignmentSetEditorTest(unittest.TestCase):
         for add_obj in params.get('alignments_to_add'):
             self.assertEqual(add_obj in output_alignment_list, True)
 
+
+
+    #@unittest.skip("skipped test_edit_alignment_set_success")
+    def test_edit_alignment_set_success(self):
+
+        self.setupData()
+
+        created_alignment_set_ref = self.alignment_set_ref
+        alignments_to_remove = [self.alignment_ref_1]
+        alignments_to_add = [self.alignment_ref_3, self.alignment_ref_4]
+
+        params = {'alignment_set_ref': created_alignment_set_ref,
+                  'workspace_name': self.getWsName(),
+                  'output_object_name': 'test_edit_alignment_set_2',
+                  'alignments_to_remove': alignments_to_remove,
+                  'alignments_to_add': alignments_to_add
+                  }
+
+        self.edit_alignment_set_success(params)
+
+
+
+   # Following test uses object refs from a narrative. Comment the next line to run the test
+    #@unittest.skip("skipped test_edit_appdev_alignment_set_success")
+    def test_edit_appdev_alignment_set_success(self):
+
+        appdev_kbasesets_alignment_set_ref = '57705/13/1'
+        alignments_to_add = ['57705/12/1', '57705/11/1']
+        alignments_to_remove = ['57705/10/1']
+
+        params = {'alignment_set_ref': appdev_kbasesets_alignment_set_ref,
+                  'workspace_name': self.getWsName(),
+                  'output_object_name': 'test_appdev_sets_edit_alignment_set1',
+                  'alignments_to_remove': alignments_to_remove,
+                  'alignments_to_add': alignments_to_add
+                  }
+
+        self.edit_alignment_set_success(params)
+
+
+
+""" ignore tests below for now
+
     # Following test uses object refs from a narrative. Comment the next line to run the test
     @unittest.skip("skipped test_edit_appdev_alignment_set_success")
     def test_edit_appdev_alignment_set_success(self):
@@ -264,23 +307,8 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
         self.edit_alignment_set_success(params)
 
-    #@unittest.skip("skipped test_edit_alignment_set_success")
-    def test_edit_alignment_set_success(self):
 
-        self.setupData()
 
-        created_alignment_set_ref = self.alignment_set_ref
-        alignments_to_remove = [self.alignment_ref_1]
-        alignments_to_add = [self.alignment_ref_3, self.alignment_ref_4]
-
-        params = {'alignment_set_ref': created_alignment_set_ref,
-                  'workspace_name': self.getWsName(),
-                  'output_object_name': 'test_edit_alignment_set_2',
-                  'alignments_to_remove': alignments_to_remove,
-                  'alignments_to_add': alignments_to_add
-                  }
-
-        self.edit_alignment_set_success(params)
 
     def edit_alignment_set_failure(self, params, error, exception=ValueError, do_startswith=False):
 
@@ -363,4 +391,5 @@ class AlignmentSetEditorTest(unittest.TestCase):
                                         'output_object_name': 'test_edit_alignment_set_2'
                                         },
                                         'Either "alignments_to_remove" or "alignments_to_add" should be given')
+"""
 

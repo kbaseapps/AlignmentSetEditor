@@ -103,7 +103,13 @@ class EditAlignmentSet:
                     break
 
             if not found:
+                condition = self.ws_client.get_object_subset([{
+                              'included': ['/condition/'],
+                               'ref': alignment_ref
+                               }])[0]['data']['condition']
+
                 alignment_set_items.append({
+                                'label': condition,
                                 'ref': alignment_ref
                             })
         return alignment_set_items
@@ -127,6 +133,7 @@ class EditAlignmentSet:
 
     def edit_alignment_set(self, params):
 
+
         ws_name_id = self._process_params(params)
         obj_name = params.get(self.PARAM_IN_OBJ_NAME_ID)
 
@@ -140,6 +147,7 @@ class EditAlignmentSet:
         alignments_to_add = params.get(self.PARAM_IN_ALIGNS_ADD, None)
 
         set_items = list()
+ 
         if alignments_to_remove is not None:
             set_items = self._remove_alignments(input_alignment_set, set_items, alignments_to_remove)
         if alignments_to_add is not None:
@@ -148,6 +156,7 @@ class EditAlignmentSet:
         set_data = {'description': 'Edited from {}'.format(alignment_set_ref),
                     'items': set_items}
 
+ 
         output_alignment_set_ref = self._save_alignment_set(ws_name_id,
                                                            obj_name,
                                                            set_data)
