@@ -5,7 +5,7 @@ import sys
 import time
 import logging
 
-from core.EditAlignmentSet import EditAlignmentSet
+from AlignmentSetEditor.core.EditAlignmentSet import EditAlignmentSet
 #END_HEADER
 
 
