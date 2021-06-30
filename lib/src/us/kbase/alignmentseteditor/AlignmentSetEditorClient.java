@@ -180,6 +180,24 @@ public class AlignmentSetEditorClient {
         return res.get(0);
     }
 
+    /**
+     * <p>Original spec-file function name: display_alignment_set</p>
+     * <pre>
+     * Display Alignment set details
+     * </pre>
+     * @param   params   instance of type {@link us.kbase.alignmentseteditor.DisplayAlignmentSetParams DisplayAlignmentSetParams}
+     * @return   instance of type {@link us.kbase.alignmentseteditor.DisplayAlignmentSetResult DisplayAlignmentSetResult}
+     * @throws IOException if an IO exception occurs
+     * @throws JsonClientException if a JSON RPC exception occurs
+     */
+    public DisplayAlignmentSetResult displayAlignmentSet(DisplayAlignmentSetParams params, RpcContext... jsonRpcContext) throws IOException, JsonClientException {
+        List<Object> args = new ArrayList<Object>();
+        args.add(params);
+        TypeReference<List<DisplayAlignmentSetResult>> retType = new TypeReference<List<DisplayAlignmentSetResult>>() {};
+        List<DisplayAlignmentSetResult> res = caller.jsonrpcCall("AlignmentSetEditor.display_alignment_set", args, retType, true, true, jsonRpcContext, this.serviceVersion);
+        return res.get(0);
+    }
+
     public Map<String, Object> status(RpcContext... jsonRpcContext) throws IOException, JsonClientException {
         List<Object> args = new ArrayList<Object>();
         TypeReference<List<Map<String, Object>>> retType = new TypeReference<List<Map<String, Object>>>() {};

@@ -1,0 +1,42 @@
+#
+# Define basic display information
+#
+name     : Display Alignment Set details
+subtitle : |
+    Display details of an exisitng alignment set object.
+tooltip  : |
+    Display details of an exisitng alignment set object.
+screenshots :
+    []
+
+icon: fba-teal.png
+
+#
+# Define the set of other narrative methods that should be suggested to the user.
+#
+suggestions :
+    apps:
+        related :
+            []
+        next :
+            []
+    methods:
+        related :
+            []
+        next :
+            []
+
+#
+# Configure the display and description of the parameters
+#
+parameters :
+    alignment_set_ref :
+        ui-name : |
+            Alignment set to edit:
+        short-hint : |
+            Alignment set contains a set of alignment objects. Each alignment object contains a bam file.
+        long-hint  : |
+            Alignment set contains a set of alignment objects. Each alignment object contains a bam file.
+
+description : |
+    <p>Display details of an alignment set object</p>

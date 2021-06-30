@@ -12,7 +12,7 @@ from __future__ import print_function
 try:
     # baseclient and this client are in a package
     from .baseclient import BaseClient as _BaseClient  # @UnusedImport
-except:
+except ImportError:
     # no they aren't
     from baseclient import BaseClient as _BaseClient  # @Reimport
 
@@ -23,7 +23,7 @@ class AlignmentSetEditor(object):
             self, url=None, timeout=30 * 60, user_id=None,
             password=None, token=None, ignore_authrc=False,
             trust_all_ssl_certificates=False,
-            auth_svc='https://kbase.us/services/authorization/Sessions/Login'):
+            auth_svc='https://ci.kbase.us/services/auth/api/legacy/KBase/Sessions/Login'):
         if url is None:
             raise ValueError('A url is required')
         self._service_ver = None
@@ -36,22 +36,41 @@ class AlignmentSetEditor(object):
     def edit_alignment_set(self, params, context=None):
         """
         Edit models
-        :param params: instance of type "EditAlignmentSetParams"
-           (EditMediaParams object: arguments for the edit model function) ->
-           structure: parameter "alignment_set_ref" of type "obj_ref" (An
-           X/Y/Z style reference), parameter "alignments_to_remove" of list
-           of type "obj_ref" (An X/Y/Z style reference), parameter
-           "alignments_to_add" of list of type "obj_ref" (An X/Y/Z style
-           reference), parameter "workspace_name" of String, parameter
-           "output_object_name" of String
+        :param params: instance of type "EditAlignmentSetParams" (*
+           EditMediaParams object: arguments for the edit alignment function
+           alignment_set_ref     - Input alignment set object to be edited
+           alignments_to_remove  - Optional, List of alignment objects (refs)
+           to be removed alignments_to_add     - Optional, List of alignment
+           objects (refs) to be added - If object already in the input set,
+           it will not be added - *** Either alignments_to_remove or
+           alignments_to_add should be given *** workspace_name        -
+           workspace name for the output output_object_name    - output
+           object name *) -> structure: parameter "alignment_set_ref" of type
+           "obj_ref" (An X/Y/Z style reference), parameter
+           "alignments_to_remove" of list of type "obj_ref" (An X/Y/Z style
+           reference), parameter "alignments_to_add" of list of type
+           "obj_ref" (An X/Y/Z style reference), parameter "workspace_name"
+           of String, parameter "output_object_name" of String
         :returns: instance of type "EditAlignmentSetResult" -> structure:
            parameter "report_name" of String, parameter "report_ref" of type
            "obj_ref" (An X/Y/Z style reference), parameter
            "alignment_set_ref" of type "obj_ref" (An X/Y/Z style reference)
         """
-        return self._client.call_method(
-            'AlignmentSetEditor.edit_alignment_set',
-            [params], self._service_ver, context)
+        return self._client.call_method('AlignmentSetEditor.edit_alignment_set',
+                                        [params], self._service_ver, context)
+
+    def display_alignment_set(self, params, context=None):
+        """
+        Display Alignment set details
+        :param params: instance of type "DisplayAlignmentSetParams" ->
+           structure: parameter "alignment_set_ref" of type "obj_ref" (An
+           X/Y/Z style reference), parameter "workspace_name" of String
+        :returns: instance of type "DisplayAlignmentSetResult" -> structure:
+           parameter "report_name" of String, parameter "report_ref" of type
+           "obj_ref" (An X/Y/Z style reference)
+        """
+        return self._client.call_method('AlignmentSetEditor.display_alignment_set',
+                                        [params], self._service_ver, context)
 
     def status(self, context=None):
         return self._client.call_method('AlignmentSetEditor.status',
