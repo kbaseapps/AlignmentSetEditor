@@ -207,7 +207,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
 
 
-    #@unittest.skip("skipped test_edit_alignment_set_success")
+    @unittest.skip("skipped test_edit_alignment_set_success")
     def test_edit_alignment_set_success(self):
 
         self.setupData()
@@ -232,7 +232,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
     def test_edit_appdev_alignment_set_success(self):
 
         appdev_kbasesets_alignment_set_ref = '57705/13/1'
-        alignments_to_add = ['57705/12/1', '57705/11/1']
+        alignments_to_add = ['57705/12/1', '57705/11/1', '57705/29/1']
         alignments_to_remove = ['57705/10/1']
 
         params = {'alignment_set_ref': appdev_kbasesets_alignment_set_ref,

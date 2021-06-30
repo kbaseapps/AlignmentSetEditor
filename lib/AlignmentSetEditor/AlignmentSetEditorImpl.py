@@ -4,8 +4,10 @@ import os
 import sys
 import time
 import logging
+from biokbase.workspace.client import Workspace
 
 from AlignmentSetEditor.core.EditAlignmentSet import EditAlignmentSet
+
 #END_HEADER
 
 
@@ -49,6 +51,7 @@ class AlignmentSetEditor:
         self.scratch = config['scratch']
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.ws_url = config['workspace-url']
+        self.workspace_client = Workspace(self.ws_url)
         self.edit_alignmentset = EditAlignmentSet(config, self.__LOGGER)
         #END_CONSTRUCTOR
         pass
@@ -74,9 +77,36 @@ class AlignmentSetEditor:
         # return variables are: returnVal
         #BEGIN edit_alignment_set
 
-        alignment_set_ref = self.edit_alignmentset.edit_alignment_set(params)
+        #alignment_set_ref = self.edit_alignmentset.edit_alignment_set(params)
+        # Get all the genome ids from our ReadsAlignment references (it's the genome_id key in
+        # the object metadata). Make a set out of them.
+        # If there's 0 or more than 1 item in the set, then either those items are bad, or they're
+        # aligned against different genomes.
+        alignment_set_ref = params['alignment_set_ref']
+        obj_data = self.workspace_client.get_objects2({"objects": [{'ref':alignment_set_ref}]})["data"][0]
+ 
+        data = obj_data["data"]
+            
+        refs = list()
+        for item in data["items"]:
+            refs.append(item["ref"])
 
-        returnVal = {'alignment_set_ref': alignment_set_ref}
+        for ref in params['alignments_to_add']:
+             refs.append(ref)
+
+        ref_list = list([{"ref": r} for r in refs])
+
+             
+        info = self.workspace_client.get_object_info3({"objects": ref_list, "includeMetadata": 1})
+        num_genomes = len(set([item[10]["genome_id"] for item in info["infos"]]))
+        if num_genomes == 0 or num_genomes > 1:
+            raise ValueError("All input alignments must be aligned "
+                             "against the same genome reference. "
+                             "All alignments must be created in the same narrative. "
+                             "Alignments created in different narratives can not "
+                             "be combined into a set.")
+        new_alignment_set_ref = self.edit_alignmentset.edit_alignment_set(params)
+        returnVal = {'alignment_set_ref': new_alignment_set_ref}
 
         #END edit_alignment_set
 
