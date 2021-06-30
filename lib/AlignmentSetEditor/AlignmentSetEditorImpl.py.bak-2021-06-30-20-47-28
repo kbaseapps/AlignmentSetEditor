@@ -4,14 +4,9 @@ import os
 import sys
 import time
 import logging
-import uuid
-import shutil
-
-
-
 from biokbase.workspace.client import Workspace
+
 from AlignmentSetEditor.core.EditAlignmentSet import EditAlignmentSet
-from AlignmentSetEditor.core.htmlreportutils import htmlreportutils
 
 #END_HEADER
 
@@ -32,8 +27,8 @@ class AlignmentSetEditor:
     # the latter method is running.
     ######################################### noqa
     VERSION = "0.0.1"
-    GIT_URL = "git@github.com:pranjan77/Alignmentseteditor"
-    GIT_COMMIT_HASH = "b107886d223e8b60a371d0bf7c10c3671406a2e9"
+    GIT_URL = ""
+    GIT_COMMIT_HASH = "6ad66af999a9585501af0ecf3a8870d7076aa24f"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -56,7 +51,6 @@ class AlignmentSetEditor:
         self.scratch = config['scratch']
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.ws_url = config['workspace-url']
-        self.hr = htmlreportutils()
         self.workspace_client = Workspace(self.ws_url)
         self.edit_alignmentset = EditAlignmentSet(config, self.__LOGGER)
         #END_CONSTRUCTOR
@@ -66,21 +60,14 @@ class AlignmentSetEditor:
     def edit_alignment_set(self, ctx, params):
         """
         Edit models
-        :param params: instance of type "EditAlignmentSetParams" (*
-           EditMediaParams object: arguments for the edit alignment function
-           alignment_set_ref     - Input alignment set object to be edited
-           alignments_to_remove  - Optional, List of alignment objects (refs)
-           to be removed alignments_to_add     - Optional, List of alignment
-           objects (refs) to be added - If object already in the input set,
-           it will not be added - *** Either alignments_to_remove or
-           alignments_to_add should be given *** workspace_name        -
-           workspace name for the output output_object_name    - output
-           object name *) -> structure: parameter "alignment_set_ref" of type
-           "obj_ref" (An X/Y/Z style reference), parameter
-           "alignments_to_remove" of list of type "obj_ref" (An X/Y/Z style
-           reference), parameter "alignments_to_add" of list of type
-           "obj_ref" (An X/Y/Z style reference), parameter "workspace_name"
-           of String, parameter "output_object_name" of String
+        :param params: instance of type "EditAlignmentSetParams"
+           (EditMediaParams object: arguments for the edit model function) ->
+           structure: parameter "alignment_set_ref" of type "obj_ref" (An
+           X/Y/Z style reference), parameter "alignments_to_remove" of list
+           of type "obj_ref" (An X/Y/Z style reference), parameter
+           "alignments_to_add" of list of type "obj_ref" (An X/Y/Z style
+           reference), parameter "workspace_name" of String, parameter
+           "output_object_name" of String
         :returns: instance of type "EditAlignmentSetResult" -> structure:
            parameter "report_name" of String, parameter "report_ref" of type
            "obj_ref" (An X/Y/Z style reference), parameter
@@ -126,66 +113,6 @@ class AlignmentSetEditor:
         # At some point might do deeper type checking...
         if not isinstance(returnVal, dict):
             raise ValueError('Method edit_alignment_set return value ' +
-                             'returnVal is not type dict as required.')
-        # return the results
-        return [returnVal]
-
-    def display_alignment_set(self, ctx, params):
-        """
-        Display Alignment set details
-        :param params: instance of type "DisplayAlignmentSetParams" ->
-           structure: parameter "alignment_set_ref" of type "obj_ref" (An
-           X/Y/Z style reference), parameter "workspace_name" of String
-        :returns: instance of type "DisplayAlignmentSetResult" -> structure:
-           parameter "report_name" of String, parameter "report_ref" of type
-           "obj_ref" (An X/Y/Z style reference)
-        """
-        # ctx is the context object
-        # return variables are: returnVal
-        #BEGIN display_alignment_set
-        alignment_set_ref = params['alignment_set_ref']
-        obj_data = self.workspace_client.get_objects2({"objects": [{'ref':alignment_set_ref}]})["data"][0]
- 
-        data = obj_data["data"]
-            
-        refs = list()
-        for item in data["items"]:
-            refs.append(item["ref"])
-
-
-        ref_list = list([{"ref": r} for r in refs])
-
-             
-        info = self.workspace_client.get_object_info3({"objects": ref_list, "includeMetadata": 1})
-
-
-        report_string = '<table><tr><th>Ref</th><th>Name</th></tr>'
-
-        for alignment in info['infos']:
-           ref = str(alignment[6]) + "/" + str(alignment[0]) + "/" + str(alignment[4])
-           name = alignment[1]
-           report_string += '<tr><td>' + str(ref) + '</td><td>' + str(name) + '</td></tr>'
-
-        report_string +='</table>'
-      
-        directory = str(uuid.uuid4())
-        path = os.path.join("/kb/module/work/tmp", directory)
-        os.mkdir(path)
-        html_path=os.path.join(path,"index.html")
-
-        print (html_path)
-        with open (html_path, "w") as f:
-            f.write("<html><body>")
-            f.write(report_string)
-            f.write("</body></html>")
-        returnVal = self.hr.create_html_report(path, params['workspace_name'])
- 
-
-        #END display_alignment_set
-
-        # At some point might do deeper type checking...
-        if not isinstance(returnVal, dict):
-            raise ValueError('Method display_alignment_set return value ' +
                              'returnVal is not type dict as required.')
         # return the results
         return [returnVal]

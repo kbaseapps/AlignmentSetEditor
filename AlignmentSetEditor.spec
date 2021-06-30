@@ -44,6 +44,26 @@ module AlignmentSetEditor {
     funcdef edit_alignment_set(EditAlignmentSetParams params)
                       returns (EditAlignmentSetResult)
                       authentication required;
+
+
+    typedef structure {
+        obj_ref         alignment_set_ref;
+        string          workspace_name;
+    } DisplayAlignmentSetParams;
+
+    typedef structure {
+        string          report_name;
+        obj_ref         report_ref;
+    } DisplayAlignmentSetResult;
+
+    /*
+    Display Alignment set details
+    */
+    funcdef display_alignment_set(DisplayAlignmentSetParams params)
+                      returns (DisplayAlignmentSetResult)
+                      authentication required;
+
+
 };
 
 

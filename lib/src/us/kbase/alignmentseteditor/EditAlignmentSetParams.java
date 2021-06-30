@@ -15,7 +15,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 /**
  * <p>Original spec-file type: EditAlignmentSetParams</p>
  * <pre>
- * EditMediaParams object: arguments for the edit model function
+ * *
+ * EditMediaParams object: arguments for the edit alignment function
+ * alignment_set_ref     - Input alignment set object to be edited
+ *     alignments_to_remove  - Optional, List of alignment objects (refs) to be removed
+ *     alignments_to_add     - Optional, List of alignment objects (refs) to be added
+ *                           - If object already in the input set, it will not be added
+ *                           - *** Either alignments_to_remove or alignments_to_add should be given ***
+ *     workspace_name        - workspace name for the output
+ *     output_object_name    - output object name
+ * *
  * </pre>
  * 
  */

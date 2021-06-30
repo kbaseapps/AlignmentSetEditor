@@ -207,7 +207,7 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
 
 
-    #@unittest.skip("skipped test_edit_alignment_set_success")
+    @unittest.skip("skipped test_edit_alignment_set_success")
     def test_edit_alignment_set_success(self):
 
         self.setupData()
@@ -222,21 +222,19 @@ class AlignmentSetEditorTest(unittest.TestCase):
                   'alignments_to_remove': alignments_to_remove,
                   'alignments_to_add': alignments_to_add
                   }
-
+      
         self.edit_alignment_set_success(params)
 
-
-
-   # Following test uses object refs from a narrative. Comment the next line to run the test
-    #@unittest.skip("skipped test_edit_appdev_alignment_set_success")
+# Following test uses object refs from a narrative. Comment the next line to run the test
+    @unittest.skip("skipped test_edit_appdev_alignment_set_success")
     def test_edit_appdev_alignment_set_success(self):
 
         appdev_kbasesets_alignment_set_ref = '57705/13/1'
         alignments_to_add = ['57705/12/1', '57705/11/1']
         alignments_to_remove = ['57705/10/1']
-
+        workspace_name = 'pranjan77:narrative_1624638405416'
         params = {'alignment_set_ref': appdev_kbasesets_alignment_set_ref,
-                  'workspace_name': self.getWsName(),
+                  'workspace_name': workspace_name,
                   'output_object_name': 'test_appdev_sets_edit_alignment_set1',
                   'alignments_to_remove': alignments_to_remove,
                   'alignments_to_add': alignments_to_add
@@ -244,6 +242,19 @@ class AlignmentSetEditorTest(unittest.TestCase):
 
         self.edit_alignment_set_success(params)
 
+
+   # Following test uses object refs from a narrative. Comment the next line to run the test
+    #@unittest.skip("skipped test_display_appdev_alignment_set_success")
+    def test_display_appdev_alignment_set_success(self):
+
+        appdev_kbasesets_alignment_set_ref = '57705/13/1'
+
+        params = {'alignment_set_ref': appdev_kbasesets_alignment_set_ref,
+                  'workspace_name': 'pranjan77:narrative_1624638405416'
+                  }
+
+        display_retVal = self.getImpl().display_alignment_set(self.ctx, params)[0]
+        print (display_retVal)
 
 
 """ ignore tests below for now

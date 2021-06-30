@@ -1,0 +1,60 @@
+{
+   "name" : "Display alignment set",
+   "authors": ["pranjan77"],
+   "ver" : "1.0.0",
+   "contact" : "http://kbase.us/contact-us/",
+   "visble" : true,
+   "categories" : ["active"],
+  "widgets": {
+        "input": null,
+        "output": null
+    },
+   "parameters" : [
+      {
+         "text_options" : {
+            "valid_ws_types" : [ "KBaseSets.ReadsAlignmentSet" ],
+	    "is_output_name": false
+         },
+         "advanced" : false,
+         "default_values" : [ "" ],
+         "id" : "alignment_set_ref",
+         "optional" : false,
+         "allow_multiple" : false,
+         "field_type" : "text"
+      }
+      
+   ],
+   "behavior" : {
+     "service-mapping": {
+            "url": "",
+            "name": "AlignmentSetEditor",
+            "method": "display_alignment_set",
+       "input_mapping": [
+       		{
+			"narrative_system_variable": "workspace",
+			"target_property": "workspace_name"
+		},
+		{
+            "input_parameter" : "alignment_set_ref",
+			"target_type_transform": "resolved-ref",
+            "target_property" : "alignment_set_ref"
+        }
+       ],
+       "output_mapping" : [
+		{
+			"service_method_output_path": [0, "report_name"],
+			"target_property": "report_name"
+		},
+            	{
+               		"service_method_output_path": [0, "report_ref"],
+               		"target_property": "report_ref"
+            	},
+            	{
+               		"narrative_system_variable" : "workspace",
+               		"target_property" : "workspace_name"
+            	}
+       ]
+     }
+   },
+   "job_id_output_field": "docker"
+ }
