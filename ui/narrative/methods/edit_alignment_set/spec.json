@@ -72,7 +72,7 @@
             ""
          ],
          "id" : "alignments_to_add",
-         "optional" : false,
+         "optional" : true,
          "allow_multiple" : true,
          "field_type" : "text"
       }
