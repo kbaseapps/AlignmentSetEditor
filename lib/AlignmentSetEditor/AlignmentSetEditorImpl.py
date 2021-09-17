@@ -161,10 +161,10 @@ class AlignmentSetEditor:
 
         report_string = '<table><tr><th>Ref</th><th>Name</th></tr>'
 
-        for alignment in info['infos']:
+        for count,alignment in enumerate(info['infos']):
            ref = str(alignment[6]) + "/" + str(alignment[0]) + "/" + str(alignment[4])
            name = alignment[1]
-           report_string += '<tr><td>' + str(ref) + '</td><td>' + str(name) + '</td></tr>'
+           report_string += '<tr><td>' + str(count) + '</td><td>' + str(ref) + '</td><td>' + str(name) + '</td></tr>'
 
         report_string +='</table>'
       
